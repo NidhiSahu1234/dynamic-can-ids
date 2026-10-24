@@ -1,0 +1,86 @@
+{
+  "artifact_version": "1.0.0",
+  "selected_features": [
+    "CAN_ID_numeric",
+    "Data_2",
+    "Data_3",
+    "Data_4",
+    "Data_5",
+    "Data_6",
+    "Data_7"
+  ],
+  "missing_payload_encoding": "-1 for missing bytes and bytes at indexes >= DLC",
+  "dt_params": {
+    "criterion": "entropy",
+    "max_depth": 8,
+    "min_samples_split": 10,
+    "min_samples_leaf": 22,
+    "random_state": 42
+  },
+  "ae_architecture": "7 -> 5 -> 3 -> 5 -> 7 (relu/sigmoid)",
+  "ae_training": {
+    "epochs": 50,
+    "batch_size": 64,
+    "learning_rate": 0.001,
+    "normal_train_samples": 160000,
+    "normal_validation_samples": 40000
+  },
+  "ae_threshold": 0.28096210956573486,
+  "ae_threshold_percentile": 99.0,
+  "random_state": 42,
+  "train_test_split": 0.2,
+  "sampling": {
+    "method": "deterministic uniform sample without replacement",
+    "max_train_rows_per_file": 200000,
+    "max_eval_rows_per_file": 100000,
+    "pretraining_datasets": {
+      "Normal": {
+        "file": "Processed-Datasets/normal_processed.csv",
+        "dataset_rows": 988871,
+        "sample_rows": 200000,
+        "sample_label_counts": {
+          "normal": 200000,
+          "attack": 0
+        }
+      },
+      "DoS": {
+        "file": "Processed-Datasets/DoS_processed.csv",
+        "dataset_rows": 3665771,
+        "sample_rows": 200000,
+        "sample_label_counts": {
+          "normal": 167767,
+          "attack": 32233
+        }
+      },
+      "Gear": {
+        "file": "Processed-Datasets/gear_processed.csv",
+        "dataset_rows": 4443142,
+        "sample_rows": 200000,
+        "sample_label_counts": {
+          "normal": 173169,
+          "attack": 26831
+        }
+      }
+    },
+    "unseen_attack_datasets": {
+      "Fuzzy": {
+        "file": "Processed-Datasets/Fuzzy_processed.csv",
+        "dataset_rows": 3838860,
+        "evaluation_sample_rows": 100000,
+        "label_counts": {
+          "normal": 87143,
+          "attack": 12857
+        }
+      },
+      "RPM": {
+        "file": "Processed-Datasets/RPM_processed.csv",
+        "dataset_rows": 4621702,
+        "evaluation_sample_rows": 100000,
+        "label_counts": {
+          "normal": 85758,
+          "attack": 14242
+        }
+      }
+    }
+  }
+}

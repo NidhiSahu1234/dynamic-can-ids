@@ -1,0 +1,32 @@
+__pycache__/
+*.py[cod]
+.env
+.venv/
+venv/
+data/
+artifacts/*
+!artifacts/ae_model.keras
+!artifacts/ae_scaler.joblib
+!artifacts/dt_model.joblib
+!artifacts/dt_scaler.joblib
+!artifacts/metadata.json
+!artifacts/metrics.json
+*.db
+node_modules/
+frontend/dist/
+.DS_Store
+*.log
+.pytest_cache/
+.idea/
+.vscode/
+.ipynb_checkpoints/
+
+# Research and training extracts stay local; only runtime source/artifacts ship.
+Can_Intrusion_Detection_System.ipynb
+26Springer_ML-BF_Responsive and Dynamic Intrusion Detection towards (1).pdf
+model_save_cells.txt
+notebook_extract.txt
+
+# Large datasets (keep local only)
+Car-Hacking-Dataset/
+Processed-Datasets/

@@ -1,0 +1,194 @@
+{
+  "evaluation_scope": "Sampled metrics only. Training and validation use deterministic samples; Fuzzy and RPM are evaluated separately on deterministic uniform samples. These values are not full-dataset metrics.",
+  "decision_tree": {
+    "heldout_pretraining_sample": {
+      "samples": 120000,
+      "accuracy": 0.9993416666666667,
+      "precision": 0.9933568785738311,
+      "recall": 1.0,
+      "f1": 0.9966673697532166,
+      "confusion_matrix": [
+        [
+          108108,
+          79
+        ],
+        [
+          0,
+          11813
+        ]
+      ],
+      "confusion_matrix_labels": [
+        "normal",
+        "attack"
+      ],
+      "tn": 108108,
+      "fp": 79,
+      "fn": 0,
+      "tp": 11813,
+      "fpr": 0.0007302171240537218,
+      "fnr": 0.0
+    },
+    "unseen_attack_categories": {
+      "Fuzzy": {
+        "samples": 100000,
+        "accuracy": 0.87151,
+        "precision": 1.0,
+        "recall": 0.0006222291358792875,
+        "f1": 0.0012436844150796734,
+        "confusion_matrix": [
+          [
+            87143,
+            0
+          ],
+          [
+            12849,
+            8
+          ]
+        ],
+        "confusion_matrix_labels": [
+          "normal",
+          "attack"
+        ],
+        "tn": 87143,
+        "fp": 0,
+        "fn": 12849,
+        "tp": 8,
+        "fpr": 0.0,
+        "fnr": 0.9993777708641207,
+        "dataset_rows": 3838860,
+        "evaluation_sample_rows": 100000,
+        "sampling": "deterministic uniform sample without replacement"
+      },
+      "RPM": {
+        "samples": 100000,
+        "accuracy": 0.85758,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "confusion_matrix": [
+          [
+            85758,
+            0
+          ],
+          [
+            14242,
+            0
+          ]
+        ],
+        "confusion_matrix_labels": [
+          "normal",
+          "attack"
+        ],
+        "tn": 85758,
+        "fp": 0,
+        "fn": 14242,
+        "tp": 0,
+        "fpr": 0.0,
+        "fnr": 1.0,
+        "dataset_rows": 4621702,
+        "evaluation_sample_rows": 100000,
+        "sampling": "deterministic uniform sample without replacement"
+      }
+    }
+  },
+  "autoencoder": {
+    "normal_validation_sample": {
+      "samples": 40000,
+      "accuracy": 0.99,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "confusion_matrix": [
+        [
+          39600,
+          400
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "confusion_matrix_labels": [
+        "normal",
+        "attack"
+      ],
+      "tn": 39600,
+      "fp": 400,
+      "fn": 0,
+      "tp": 0,
+      "fpr": 0.01,
+      "fnr": 0.0,
+      "mean_error": 0.07396449893712997,
+      "threshold_percentile": 99.0,
+      "threshold": 0.28096210956573486,
+      "flagged_count": 400
+    },
+    "Fuzzy": {
+      "samples": 100000,
+      "accuracy": 0.92149,
+      "precision": 0.7292964455844632,
+      "recall": 0.619195768841876,
+      "f1": 0.6697513986455222,
+      "confusion_matrix": [
+        [
+          84188,
+          2955
+        ],
+        [
+          4896,
+          7961
+        ]
+      ],
+      "confusion_matrix_labels": [
+        "normal",
+        "attack"
+      ],
+      "tn": 84188,
+      "fp": 2955,
+      "fn": 4896,
+      "tp": 7961,
+      "fpr": 0.03390978047576971,
+      "fnr": 0.38080423115812395,
+      "dataset_rows": 3838860,
+      "evaluation_sample_rows": 100000,
+      "sampling": "deterministic uniform sample without replacement",
+      "mean_error": 0.12278702855110168,
+      "threshold": 0.28096210956573486,
+      "detected_above_threshold": 10916
+    },
+    "RPM": {
+      "samples": 100000,
+      "accuracy": 0.98832,
+      "precision": 0.9242050616482803,
+      "recall": 1.0,
+      "f1": 0.9606097396465668,
+      "confusion_matrix": [
+        [
+          84590,
+          1168
+        ],
+        [
+          0,
+          14242
+        ]
+      ],
+      "confusion_matrix_labels": [
+        "normal",
+        "attack"
+      ],
+      "tn": 84590,
+      "fp": 1168,
+      "fn": 0,
+      "tp": 14242,
+      "fpr": 0.013619720609155997,
+      "fnr": 0.0,
+      "dataset_rows": 4621702,
+      "evaluation_sample_rows": 100000,
+      "sampling": "deterministic uniform sample without replacement",
+      "mean_error": 0.11211730539798737,
+      "threshold": 0.28096210956573486,
+      "detected_above_threshold": 15410
+    }
+  },
+  "training_duration_seconds": 219.26
+}
