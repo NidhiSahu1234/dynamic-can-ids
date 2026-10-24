@@ -212,10 +212,10 @@ export default function App() {
             <p className="eyebrow">DATASET PLAYBACK</p>
             <h2>Traffic analysis</h2>
           </div>
-          <span className="live-label"><span /> Stored CSV rows</span>
+          <span className="live-label"><span /> Traffic samples</span>
         </div>
         <p className="muted">
-          Replays processed dataset records through the API. This is simulated traffic, not a live vehicle connection.
+          Replays processed CSV rows when available. If the NORMAL CSV is not deployed, the API uses a safe built-in normal frame; other dataset choices require their CSV. This is simulated traffic, not a live vehicle connection.
         </p>
         <div className="controls">
           <label>

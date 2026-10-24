@@ -235,6 +235,13 @@ TRAFFIC_SOURCES = {
     "gear": PROCESSED_DIR / "gear_processed.csv",
     "rpm": PROCESSED_DIR / "RPM_processed.csv",
 }
+NORMAL_DEMO_FRAME = {
+    "timestamp": 0.0,
+    "can_id": "0350",
+    "dlc": 8,
+    "data": ["05", "28", "84", "66", "6d", "00", "00", "a2"],
+    "label": "normal",
+}
 
 
 @app.get("/traffic/sample")
@@ -244,8 +251,25 @@ def traffic_sample(
     limit: int = Query(default=25, ge=1, le=200),
 ):
     path = TRAFFIC_SOURCES.get(source.lower())
-    if path is None or not path.exists():
-        raise HTTPException(status_code=404, detail="Unknown or missing traffic source")
+    if path is None:
+        raise HTTPException(status_code=404, detail="Unknown traffic source")
+    if not path.exists():
+        if source.lower() == "normal":
+            frames = [] if skip else [{**NORMAL_DEMO_FRAME, "data": NORMAL_DEMO_FRAME["data"].copy()}]
+            return {
+                "source": source,
+                "skip": skip,
+                "count": len(frames),
+                "frames": frames[:limit],
+                "demo": True,
+            }
+        raise HTTPException(
+            status_code=404,
+            detail=(
+                f"Processed dataset '{source}' is not deployed. Only the safe built-in normal "
+                "demo frame is available without publishing the processed CSVs."
+            ),
+        )
     try:
         df = pd.read_csv(
             path,
