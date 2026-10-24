@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import json
-import sqlite3
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+
+from backend.app.services.database import connect, ensure_sqlite_parent, execute
 
 
 @dataclass
@@ -24,13 +25,11 @@ class AlertRecord:
 class AlertStore:
     def __init__(self, db_path: Path) -> None:
         self.db_path = db_path
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        ensure_sqlite_parent(self.db_path)
         self._init_db()
 
-    def _connect(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        return conn
+    def _connect(self):
+        return connect(self.db_path)
 
     def _init_db(self) -> None:
         conn = self._connect()
@@ -77,7 +76,8 @@ class AlertStore:
         )
         conn = self._connect()
         try:
-            conn.execute(
+            execute(
+                conn,
                 """
                 INSERT INTO alerts (
                     alert_id, timestamp, can_id, predicted_class, detection_method,
@@ -104,7 +104,8 @@ class AlertStore:
     def list_recent(self, limit: int = 100) -> list[AlertRecord]:
         conn = self._connect()
         try:
-            rows = conn.execute(
+            rows = execute(
+                conn,
                 "SELECT * FROM alerts ORDER BY timestamp DESC LIMIT ?",
                 (limit,),
             ).fetchall()

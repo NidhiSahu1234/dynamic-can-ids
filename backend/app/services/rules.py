@@ -17,7 +17,6 @@ from __future__ import annotations
 
 import json
 import re
-import sqlite3
 import threading
 import uuid
 from dataclasses import dataclass
@@ -25,6 +24,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from backend.app.services.bloom_filter import BloomFilter, BloomFilterConfig
+from backend.app.services.database import INTEGRITY_ERRORS, connect, ensure_sqlite_parent, execute
 from ml.features import normalize_attack_signature
 
 
@@ -48,13 +48,11 @@ class RuleService:
         self.db_path = db_path
         self.bloom = bloom or BloomFilter(BloomFilterConfig())
         self._lock = threading.RLock()
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        ensure_sqlite_parent(self.db_path)
         self._init_db()
 
-    def _connect(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(self.db_path, timeout=10)
-        conn.row_factory = sqlite3.Row
-        return conn
+    def _connect(self):
+        return connect(self.db_path)
 
     def _init_db(self) -> None:
         conn = self._connect()
@@ -98,21 +96,29 @@ class RuleService:
         finally:
             conn.close()
 
-    def _persist_bloom(self, conn: sqlite3.Connection | None = None) -> None:
+    def _persist_bloom(self, conn=None) -> None:
         payload = json.dumps(self.bloom.to_dict())
         if conn is None:
             c = self._connect()
             try:
-                c.execute(
-                    "INSERT OR REPLACE INTO bloom_state (id, payload) VALUES (1, ?)",
+                execute(
+                    c,
+                    """
+                    INSERT INTO bloom_state (id, payload) VALUES (1, ?)
+                    ON CONFLICT (id) DO UPDATE SET payload = excluded.payload
+                    """,
                     (payload,),
                 )
                 c.commit()
             finally:
                 c.close()
         else:
-            conn.execute(
-                "INSERT OR REPLACE INTO bloom_state (id, payload) VALUES (1, ?)",
+            execute(
+                conn,
+                """
+                INSERT INTO bloom_state (id, payload) VALUES (1, ?)
+                ON CONFLICT (id) DO UPDATE SET payload = excluded.payload
+                """,
                 (payload,),
             )
 
@@ -175,7 +181,8 @@ class RuleService:
             previous_bloom = self.bloom.to_dict()
             conn = self._connect()
             try:
-                conn.execute(
+                execute(
+                    conn,
                     """
                     INSERT INTO rules (rule_id, signature, attack_type, status, source, created_at, notes)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -194,7 +201,7 @@ class RuleService:
                     self.bloom.add(signature)
                     self._persist_bloom(conn)
                 conn.commit()
-            except sqlite3.IntegrityError as exc:
+            except INTEGRITY_ERRORS as exc:
                 conn.rollback()
                 self.bloom = BloomFilter.from_dict(previous_bloom)
                 raise ValueError("A rule with this signature already exists") from exc
@@ -211,7 +218,7 @@ class RuleService:
             previous_bloom = self.bloom
             conn = self._connect()
             try:
-                cur = conn.execute("DELETE FROM rules WHERE rule_id = ?", (rule_id,))
+                cur = execute(conn, "DELETE FROM rules WHERE rule_id = ?", (rule_id,))
                 removed = cur.rowcount > 0
                 if removed:
                     rebuilt = BloomFilter(self.bloom.config)

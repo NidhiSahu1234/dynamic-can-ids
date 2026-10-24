@@ -2,7 +2,7 @@ services:
   - type: web
     name: dynamic-can-ids-api
     runtime: python
-    plan: 1c-2g
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
@@ -12,10 +12,8 @@ services:
       - key: ARTIFACTS_DIR
         value: artifacts
       - key: IDS_DB_PATH
-        value: /var/data/can-ids.sqlite3
+        value: /tmp/can-ids.sqlite3
+      - key: DATABASE_URL
+        sync: false
       - key: CORS_ORIGINS
         value: http://localhost:5173,http://127.0.0.1:5173
-    disk:
-      name: can-ids-data
-      mountPath: /var/data
-      sizeGB: 1
